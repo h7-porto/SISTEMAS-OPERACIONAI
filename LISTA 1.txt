@@ -1,0 +1,46 @@
+﻿Exercícios Teóricos – Processos
+
+1. Qual a diferença entre programa e processo?
+Programa é apenas um arquivo que reúne instruções e dados, sendo algo fixo que fica armazenado no disco, como acontece com um navegador antes de ser iniciado. Já o processo é a execução desse programa: o sistema operacional carrega o código na memória, cria as estruturas necessárias, reserva recursos e a CPU passa a rodar suas instruções. Por isso, um mesmo programa pode dar origem a diferentes processos ativos ao mesmo tempo, cada qual com memória e estado independentes.
+
+2. Quais são os estados de um processo e quando ocorrem as transições?
+Um processo pode assumir diversos estados durante sua vida: ele nasce no estado novo, passa para pronto quando aguarda a CPU, entra em execução quando está rodando de fato, pode ficar bloqueado caso precise esperar algum evento externo ou recurso, e chega ao estado terminado quando completa sua atividade. Essas transições ocorrem de acordo com a disponibilidade do processador, a espera por recursos e o encerramento da tarefa.
+
+3. O que contém um Process Control Block (PCB)?
+O Process Control Block (PCB) é a estrutura usada pelo sistema operacional para registrar todos os dados referentes a um processo. Nele constam informações como identificação, estado atual, contador de programa (com a próxima instrução), registradores em uso, áreas de memória alocadas, parâmetros de escalonamento, além de dados sobre arquivos abertos e dispositivos que o processo esteja utilizando.
+
+4. O que acontece com os recursos de um processo quando ele termina?
+Quando um processo chega ao fim, o sistema libera tudo que estava sendo usado por ele: a memória ocupada, os registradores da CPU, os arquivos abertos e conexões, além de remover os bloqueios e o próprio PCB. Em sistemas Unix, os filhos órfãos passam a ser adotados pelo processo pai padrão. Assim, os recursos voltam a ficar disponíveis para outros processos.
+
+5. Qual a diferença entre fork() e exec() no UNIX?
+No UNIX, a chamada de sistema fork() cria um novo processo duplicando o pai, enquanto a exec() substitui o conteúdo do processo em execução por um novo programa. Em outras palavras, fork() cria outro processo e exec() troca a imagem do processo atual sem gerar um novo.
+
+6. Como funciona a hierarquia de processos em UNIX?
+Em UNIX, os processos formam uma árvore hierárquica: cada processo pode criar outros usando fork(). O processo que cria é chamado de pai e o gerado é o filho, que pode carregar outro programa por meio de exec(). Toda a árvore tem como raiz o processo init (PID 1), o primeiro a ser iniciado no sistema. Quando um processo finaliza, o pai coleta suas informações de término por meio de wait().
+
+7. Compare memória compartilhada e troca de mensagens (IPC).
+A comunicação entre processos pode ocorrer por memória compartilhada ou por troca de mensagens. Na memória compartilhada, o sistema define uma área de RAM acessível a vários processos, que podem ler e escrever diretamente nela. Isso é rápido, mas exige mecanismos de sincronização. Já a troca de mensagens não envolve memória comum: os processos se comunicam por meio de mensagens enviadas e recebidas via pipes, filas ou soquetes. Essa abordagem é mais simples e segura, porém mais lenta, porque envolve cópia de dados.
+
+8. Cite exemplos de chamadas de sistema usadas em IPC.
+Algumas chamadas de sistema comuns em IPC são: pipe(), que estabelece um canal de comunicação unidirecional; shmget() e shmat(), que permitem criar e anexar memória compartilhada; msgsnd() e msgrcv(), que servem para envio e recebimento em filas de mensagens; e semget() e semop(), usadas no controle de semáforos.
+
+9. Por que é importante que o sistema operacional faça gerenciamento de processos?
+O gerenciamento de processos feito pelo sistema operacional é essencial para garantir ordem e eficiência no uso dos recursos da máquina. Sem esse controle, haveria disputas pela CPU, acessos incorretos à memória, falhas na comunicação e até deadlocks. Com ele, assegura-se que todos os processos recebam tempo de execução de forma equilibrada, que a memória seja bem utilizada e que o sistema se mantenha estável.
+
+10. Explique a diferença entre processos independentes e processos cooperativos.
+Processos independentes são aqueles que executam sem nenhuma relação com os demais, cada um com sua memória isolada e sem interferência externa, como um editor de texto e um jogo abertos juntos. Já processos cooperativos trocam informações e compartilham recursos, influenciando uns aos outros, como acontece em um servidor web com seus subprocessos de atendimento ou em programas que utilizam memória compartilhada para dividir tarefas.	
+
+11. O que é um processo zumbi em UNIX/Linux?
+Um processo zumbi em UNIX/Linux é aquele que já encerrou sua execução, mas permanece registrado na tabela de processos porque o pai ainda não coletou seu status com wait(). Ele não consome CPU nem memória relevante, mas ocupa uma entrada na tabela até ser removido.
+
+12. Explique a diferença entre chamadas bloqueantes e não bloqueantes em IPC.
+Em IPC, chamadas bloqueantes fazem com que o processo espere até o fim da operação, como no caso de aguardar o envio ou recebimento de uma mensagem. Nas chamadas não bloqueantes, o processo não precisa esperar e pode continuar executando outras tarefas enquanto a operação de comunicação ainda está em andamento. Isso traz mais agilidade em alguns contextos, embora aumente a complexidade de controle.
+
+13. Qual a diferença entre processo pesado (process) e thread (processo leve)?
+O processo é um programa em execução completo, com memória e recursos exclusivos. A comunicação entre processos requer mecanismos específicos e sua criação ou alternância é custosa. Já a thread é uma linha de execução dentro de um processo, que compartilha a mesma memória e arquivos com as outras threads. Elas são mais leves e rápidas de criar e alternar, já que dividem o mesmo ambiente.
+
+14. Por que sistemas operacionais multiprogramados precisam de troca de contexto (context switch)?
+A troca de contexto é necessária em sistemas multiprogramados porque vários processos compartilham a CPU. Esse mecanismo salva o estado do processo que estava rodando e carrega o estado de outro processo pronto, permitindo que todos avancem de forma concorrente e criando a impressão de paralelismo, mesmo em processadores de núcleo único.
+
+15. Cite vantagens e desvantagens da comunicação via memória compartilhada.
+A comunicação por memória compartilhada tem como principal vantagem a alta velocidade, pois dispensa cópia de dados e permite trocas intensas de informação. Em contrapartida, exige cuidados de sincronização para evitar inconsistências, o que pode dificultar seu uso e aumentar as chances de erro.
